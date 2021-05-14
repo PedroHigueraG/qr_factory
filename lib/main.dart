@@ -36,6 +36,8 @@ class _MyAppState extends State<MyApp> {
                 icon: Icon(Icons.qr_code_scanner), label: 'Scan'),
             BottomNavigationBarItem(icon: Icon(Icons.qr_code), label: 'Create'),
           ],
+          selectedItemColor: Color(0xff3EC2C2),
+          iconSize: 30,
         ),
       ),
     );
