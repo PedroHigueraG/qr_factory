@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // ignore: camel_case_types
 class scannerPage extends StatefulWidget {
@@ -18,59 +19,72 @@ class _scannerPageState extends State<scannerPage> {
 
   @override
   Widget build(BuildContext context) {
+    //_qrInfo(context);
     return Stack(
-      alignment: Alignment.bottomCenter,
+      alignment: Alignment.topCenter,
       children: <Widget>[
-        Expanded(flex: 3, child: _buildQrView(context)),
-        Expanded(
-          flex: 2,
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 200),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  MaterialButton(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      minWidth: 120,
-                      height: 40,
-                      color: Color(0xff3EC2C2),
-                      child: Row(
-                        children: [
-                          Icon(Icons.flash_on),
-                          Text(
-                            'Flashlight',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                        ],
-                      ),
-                      onPressed: () async {
-                        await controller?.toggleFlash();
-                        setState(() {});
-                      }),
-                  MaterialButton(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      minWidth: 120,
-                      height: 40,
-                      color: Color(0xff3EC2C2),
-                      child: Row(
-                        children: [
-                          Icon(Icons.flip_camera_ios),
-                          Text(
-                            'Flip camera',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                        ],
-                      ),
-                      onPressed: () async {
-                        await controller?.flipCamera();
-                        setState(() {});
-                      })
-                ]
-                //(result != null) ? Text('Data: ${result.code}') : Text('Ola'),
-                ),
+        Container(
+            height: Size.infinite.height,
+            width: Size.infinite.width,
+            child: _buildQrView(context)),
+        Padding(
+          padding: const EdgeInsets.only(top: 120),
+          child: Text(
+            'Scan the QR Code',
+            style: TextStyle(color: Color(0xff3EC2C2), fontSize: 25),
           ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 500),
+          child:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+            MaterialButton(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                minWidth: 120,
+                height: 40,
+                color: Color(0xff3EC2C2),
+                child: Row(
+                  children: [
+                    Icon(Icons.flash_on),
+                    Text(
+                      'Flashlight',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ],
+                ),
+                onPressed: () async {
+                  await controller?.toggleFlash();
+                  setState(() {});
+                }),
+            MaterialButton(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                minWidth: 120,
+                height: 40,
+                color: Color(0xff3EC2C2),
+                child: Row(
+                  children: [
+                    Icon(Icons.flip_camera_ios),
+                    Text(
+                      'Flip camera',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ],
+                ),
+                onPressed: () async {
+                  await controller?.flipCamera();
+                  setState(() {});
+                })
+          ]),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 600),
+          child: (result != null)
+              ? Text('Data: ${result.code}',
+                  style: TextStyle(color: Color(0xff3EC2C2), fontSize: 20))
+              : Text('Scan',
+                  style: TextStyle(color: Color(0xff3EC2C2), fontSize: 20)),
         ),
       ],
     );
@@ -110,6 +124,28 @@ class _scannerPageState extends State<scannerPage> {
       setState(() {
         result = scanData;
       });
+      //_qrInfo(context);
+      //launch(result.toString());
+      _openLink();
     });
+  }
+
+  void _qrInfo(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext) {
+          return Container(
+            height: MediaQuery.of(context).size.height,
+            child: Text('QR Link: ${result.code}'),
+          );
+        });
+  }
+
+  void _openLink() async {
+    if (await canLaunch(result.code)) {
+      launch(result.code);
+    } else {
+      print('error');
+    }
   }
 }
