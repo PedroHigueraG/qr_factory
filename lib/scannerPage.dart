@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 // ignore: camel_case_types
 class scannerPage extends StatefulWidget {
   const scannerPage({Key key}) : super(key: key);
+  
 
   @override
   _scannerPageState createState() => _scannerPageState();
@@ -17,7 +18,7 @@ class _scannerPageState extends State<scannerPage> {
   Barcode result;
   QRViewController controller;
   GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-
+  List dominios = ['.com','.co','.ca','.cl','.org','.io','.net','.blogspot','.uk','.ru','.de','.cn','.site','.xyz','es'];
   @override
   Widget build(BuildContext context) {
     //_qrInfo(context);
@@ -83,27 +84,36 @@ class _scannerPageState extends State<scannerPage> {
           padding: const EdgeInsets.only(top: 600),
           child: (result != null)
               ? Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Expanded(child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Text(result.code, style: TextStyle(color: Color(0xff3EC2C2), fontSize: 20)),
-                    )),
-                    Padding(
-                      padding: const EdgeInsets.all(3.0),
-                      child: GestureDetector(
-                        child:Icon(Icons.copy,color: Color(0xff3EC2C2)),
-                        onTap: () => Clipboard.setData(ClipboardData(text: result.code)).then((result) => {
-                            ScaffoldMessenger.of(context) .showSnackBar(SnackBar( content: Text("Copied to clipboard")))
-                        }),
-                      ),
-                    )
-                  ],
-                ),
-              )
-              : Text('Scan', style: TextStyle(color: Color(0xff3EC2C2), fontSize: 20)),
+                  padding: const EdgeInsets.all(10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Expanded(
+                          child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Text(result.code,
+                            style: TextStyle(
+                                color: Color(0xff3EC2C2), fontSize: 20)),
+                      )),
+                      Padding(
+                        padding: const EdgeInsets.all(3.0),
+                        child: GestureDetector(
+                          child: Icon(Icons.copy, color: Color(0xff3EC2C2)),
+                          onTap: () => Clipboard.setData(
+                                  ClipboardData(text: result.code))
+                              .then((result) => {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                            content:
+                                                Text("Copied to clipboard")))
+                                  }),
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              : Text('Scan',
+                  style: TextStyle(color: Color(0xff3EC2C2), fontSize: 20)),
         ),
       ],
     );
@@ -163,8 +173,13 @@ class _scannerPageState extends State<scannerPage> {
   void _openLink() async {
     if (await canLaunch(result.code)) {
       launch(result.code);
-    } else {
-      print('error');
+    } else if (result.code.startsWith('www.')) {
+      launch('https://${result.code}');
+    } 
+    for(var dom in dominios){
+      if(result.code.contains(dom)){
+        launch('https://${result.code}');
+      }
     }
   }
 }
