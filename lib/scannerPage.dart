@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -81,10 +82,28 @@ class _scannerPageState extends State<scannerPage> {
         Padding(
           padding: const EdgeInsets.only(top: 600),
           child: (result != null)
-              ? Text('Data: ${result.code}',
-                  style: TextStyle(color: Color(0xff3EC2C2), fontSize: 20))
-              : Text('Scan',
-                  style: TextStyle(color: Color(0xff3EC2C2), fontSize: 20)),
+              ? Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Expanded(child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Text(result.code, style: TextStyle(color: Color(0xff3EC2C2), fontSize: 20)),
+                    )),
+                    Padding(
+                      padding: const EdgeInsets.all(3.0),
+                      child: GestureDetector(
+                        child:Icon(Icons.copy,color: Color(0xff3EC2C2)),
+                        onTap: () => Clipboard.setData(ClipboardData(text: result.code)).then((result) => {
+                            ScaffoldMessenger.of(context) .showSnackBar(SnackBar( content: Text("Copied to clipboard")))
+                        }),
+                      ),
+                    )
+                  ],
+                ),
+              )
+              : Text('Scan', style: TextStyle(color: Color(0xff3EC2C2), fontSize: 20)),
         ),
       ],
     );
