@@ -4,24 +4,21 @@ import 'package:flutter/services.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-// ignore: camel_case_types
-class scannerPage extends StatefulWidget {
-  const scannerPage({Key key}) : super(key: key);
+class ScannerPage extends StatefulWidget {
+  const ScannerPage({Key key}) : super(key: key);
   
-
   @override
-  _scannerPageState createState() => _scannerPageState();
+  _ScannerPageState createState() => _ScannerPageState();
 }
 
-// ignore: camel_case_types
-class _scannerPageState extends State<scannerPage> {
+class _ScannerPageState extends State<ScannerPage> {
   Barcode result;
   QRViewController controller;
   GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   List dominios = ['.com','.co','.ca','.cl','.org','.io','.net','.blogspot','.uk','.ru','.de','.cn','.site','.xyz','es'];
   @override
   Widget build(BuildContext context) {
-    //_qrInfo(context);
+   
     return Stack(
       alignment: Alignment.topCenter,
       children: <Widget>[
@@ -153,21 +150,8 @@ class _scannerPageState extends State<scannerPage> {
       setState(() {
         result = scanData;
       });
-      //_qrInfo(context);
-      //launch(result.toString());
       _openLink();
     });
-  }
-
-  void _qrInfo(context) {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext) {
-          return Container(
-            height: MediaQuery.of(context).size.height,
-            child: Text('QR Link: ${result.code}'),
-          );
-        });
   }
 
   void _openLink() async {
