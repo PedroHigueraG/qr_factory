@@ -1,4 +1,9 @@
+import 'dart:convert';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
+import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:qr_factory/generatorPage.dart';
 
@@ -20,6 +25,26 @@ class _QrGenPageState extends State<QrGenPage> {
 
   @override
   Widget build(BuildContext context) {
+    GlobalKey _globalKey = new GlobalKey();
+
+    Future<Uint8List> _capturePng() async {
+      try {
+        print('inside');
+        RenderRepaintBoundary boundary =
+            _globalKey.currentContext.findRenderObject();
+        ui.Image image = await boundary.toImage(pixelRatio: 3.0);
+        ByteData byteData =
+            await image.toByteData(format: ui.ImageByteFormat.png);
+        var pngBytes = byteData.buffer.asUint8List();
+
+        setState(() {});
+        Share.file('QR Code', 'QRCode.png', byteData.buffer.asUint8List(), 'images/png');
+        return pngBytes;
+      } catch (e) {
+        print(e);
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
           title: Text('QR Code', style: TextStyle(color: Colors.black)),
@@ -28,22 +53,26 @@ class _QrGenPageState extends State<QrGenPage> {
       body: SingleChildScrollView(
         child: Center(
           child: Column(children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 25),
-              child: Container(
-                child: QrImage(data: valueQr),
-                width: 280,
-                height: 280,
-                decoration: BoxDecoration(
-                    color: Colors.grey.shade200,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 3,
-                        blurRadius: 10,
-                      )
-                    ]),
+            RepaintBoundary(
+              key: _globalKey,
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 25),
+                child: Container(
+                  child: RepaintBoundary(child: QrImage(data: valueQr)),
+                  width: 280,
+                  height: 280,
+                  decoration: BoxDecoration(
+                      color: Colors.grey.shade200,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 3,
+                          blurRadius: 10,
+                        )
+                      ]),
+                ),
               ),
             ),
             widgetQr(),
@@ -70,13 +99,12 @@ class _QrGenPageState extends State<QrGenPage> {
                           valueQr = red;
                         } else if (boton == 2) {
                           String num = 'tel: +' +
-                              countryControler.text.toString()+
+                              countryControler.text.toString() +
                               numController.text.toString();
                           valueQr = num;
-                        }
-                        else if (boton == 3) {
+                        } else if (boton == 3) {
                           String num = 'https://wa.me/' +
-                              countryControler.text.toString()+
+                              countryControler.text.toString() +
                               numController.text.toString();
                           valueQr = num;
                         }
@@ -85,7 +113,11 @@ class _QrGenPageState extends State<QrGenPage> {
                 MaterialButton(
                   minWidth: 50,
                   child: Icon(Icons.share),
-                  onPressed: () {},
+                  onPressed: () {
+                    _capturePng();
+
+                    ;
+                  },
                 )
               ],
             ),
@@ -109,6 +141,8 @@ class _QrGenPageState extends State<QrGenPage> {
       return wifiURL();
     } else if (boton == 2 || boton == 3) {
       return telURL();
+    } else {
+      return null;
     }
   }
 
