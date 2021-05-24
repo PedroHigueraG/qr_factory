@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qr_factory/qrGenerated.dart';
 
 var alto = 0.1;
+var boton = 0;
 
 class GeneratorPage extends StatelessWidget {
   const GeneratorPage({Key key}) : super(key: key);
@@ -60,6 +61,7 @@ class GeneratorPage extends StatelessWidget {
           ],
         ),
         onPressed: () {
+          boton = 0;
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => QrGenPage()));
         },
@@ -84,7 +86,11 @@ class GeneratorPage extends StatelessWidget {
             ),
           ],
         ),
-        onPressed: () {},
+        onPressed: () {
+          boton = 1;
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => QrGenPage()));
+        },
       ),
     );
   }
@@ -106,7 +112,11 @@ class GeneratorPage extends StatelessWidget {
             ),
           ],
         ),
-        onPressed: () {},
+        onPressed: () {
+          boton = 2;
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => QrGenPage()));
+        },
       ),
     );
   }
@@ -128,7 +138,11 @@ class GeneratorPage extends StatelessWidget {
             ),
           ],
         ),
-        onPressed: () {},
+        onPressed: () {
+          boton = 3;
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => QrGenPage()));
+        },
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:qr_factory/generatorPage.dart';
 
 var valueQr = '';
 
@@ -12,12 +13,16 @@ class QrGenPage extends StatefulWidget {
 
 class _QrGenPageState extends State<QrGenPage> {
   TextEditingController urlController = new TextEditingController();
+  TextEditingController nameNetController = new TextEditingController();
+  TextEditingController passNetController = new TextEditingController();
+  TextEditingController countryControler = new TextEditingController();
+  TextEditingController numController = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text('QR Code for URL', style: TextStyle(color: Colors.black)),
+          title: Text('QR Code', style: TextStyle(color: Colors.black)),
           iconTheme: IconThemeData(color: Colors.black),
           backgroundColor: Color(0xff3EC2C2)),
       body: SingleChildScrollView(
@@ -41,23 +46,7 @@ class _QrGenPageState extends State<QrGenPage> {
                     ]),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-              child: TextField(
-                controller: urlController,
-                decoration: InputDecoration(
-                  prefixIcon: Icon(
-                    Icons.link,
-                    color: Color(0xff3EC2C2),
-                  ),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                  focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xff3EC2C2))),
-                  hintText: 'Enter a URL',
-                ),
-              ),
-            ),
+            widgetQr(),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -68,7 +57,29 @@ class _QrGenPageState extends State<QrGenPage> {
                     child: Text('Generate'),
                     onPressed: () {
                       setState(() {
-                        valueQr = urlController.text.toString();
+                        if (boton == 0) {
+                          valueQr = urlController.text.toString();
+                        } else if (boton == 1) {
+                          String red = 'WIFI:S:' +
+                              nameNetController.text.toString() +
+                              ';T:' +
+                              dropValue +
+                              ';P:' +
+                              passNetController.text.toString() +
+                              ';H:True;;';
+                          valueQr = red;
+                        } else if (boton == 2) {
+                          String num = 'tel: +' +
+                              countryControler.text.toString()+
+                              numController.text.toString();
+                          valueQr = num;
+                        }
+                        else if (boton == 3) {
+                          String num = 'https://wa.me/' +
+                              countryControler.text.toString()+
+                              numController.text.toString();
+                          valueQr = num;
+                        }
                       });
                     }),
                 MaterialButton(
@@ -91,5 +102,145 @@ class _QrGenPageState extends State<QrGenPage> {
       return Text('Hi');
   }
 
-  void _generateImage() {}
+  Widget widgetQr() {
+    if (boton == 0) {
+      return qrURL();
+    } else if (boton == 1) {
+      return wifiURL();
+    } else if (boton == 2 || boton == 3) {
+      return telURL();
+    }
+  }
+
+  Widget qrURL() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      child: TextField(
+        controller: urlController,
+        decoration: InputDecoration(
+          prefixIcon: Icon(
+            Icons.link,
+            color: Color(0xff3EC2C2),
+          ),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+          focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Color(0xff3EC2C2))),
+          hintText: 'Enter a URL',
+        ),
+      ),
+    );
+  }
+
+  String dropValue = 'WPA';
+  Widget wifiURL() {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          child: TextField(
+            controller: nameNetController,
+            decoration: InputDecoration(
+              prefixIcon: Icon(
+                Icons.link,
+                color: Color(0xff3EC2C2),
+              ),
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+              focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xff3EC2C2))),
+              hintText: 'Name of network',
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          child: TextField(
+            controller: passNetController,
+            decoration: InputDecoration(
+              prefixIcon: Icon(
+                Icons.link,
+                color: Color(0xff3EC2C2),
+              ),
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+              focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xff3EC2C2))),
+              hintText: 'Password of network',
+            ),
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Type of security: '),
+            Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                child: DropdownButton<String>(
+                  value: dropValue,
+                  underline: Container(
+                    height: 2,
+                    color: Color(0xff3EC2C2),
+                  ),
+                  onChanged: (String newValue) {
+                    setState(() {
+                      dropValue = newValue;
+                    });
+                  },
+                  items: <String>['WPA', 'WEP']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                )),
+          ],
+        )
+      ],
+    );
+  }
+
+  Widget telURL() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: Container(
+              width: 100,
+              child: TextField(
+                controller: countryControler,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.add_circle_outline_sharp,
+                      color: Color(0xff3EC2C2)),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Color(0xff3EC2C2))),
+                  hintText: '+',
+                ),
+              ),
+            ),
+          ),
+          Flexible(
+            child: TextField(
+              controller: numController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.phone, color: Color(0xff3EC2C2)),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Color(0xff3EC2C2))),
+                hintText: 'Number phone',
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
