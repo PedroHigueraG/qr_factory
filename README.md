@@ -12,7 +12,7 @@ A futter app to scan and generate a qr_code
 - This is the main interface, in this interface you can scan your qr code and launch in the web or copy in the clipboard and flip the camera and use the flash
 
 <p>
-  <img src="assets/1.jpg" />
+  <img src="assets/1.jpg" width="250"/>
 </p>
 - The next interface is the menu to select the qr type
 <p>
