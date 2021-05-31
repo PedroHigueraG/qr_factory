@@ -6,7 +6,7 @@ A futter app to scan and generate a qr_code
 ## How to use
 
 - Download the apk, click here:
-- <a href="assets/QRFactory.apk" download="QRFactory.apk">Download apk</a>
+- <a href="https://github.com/PedroHigueraG/qr_factory/raw/main/assets/QRFactory.apk" download="QRFactory.apk">Download apk</a>
 
 
 - This is the main interface, in this interface you can scan your qr code and launch in the web or copy in the clipboard and flip the camera and use the flash
