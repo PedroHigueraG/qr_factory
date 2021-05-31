@@ -16,17 +16,17 @@ A futter app to scan and generate a qr_code
 </p>
 - The next interface is the menu to select the qr type
 <p>
-  <img src="assets/2.jpg" />
+  <img src="assets/2.jpg" width="250"/>
 </p>
 - URL QR, you need a link or text to generate a qr 
 <p>
-  <img src="assets/3.jpg" />
+  <img src="assets/3.jpg" width="250"/>
 </p>
 - Wifi QR, you need a wifi name, password and type of security to generate a qr 
 <p>
-  <img src="assets/4.jpg" />
+  <img src="assets/4.jpg" width="250"/>
 </p>
 - Number phone or whatsapp QE, you need a number phone and number of country to generate a qr 
 <p>
-  <img src="assets/5.jpg" />
+  <img src="assets/5.jpg" width="250"/>
 </p>
