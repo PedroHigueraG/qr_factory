@@ -2,7 +2,6 @@
 
 A futter app to scan and generate a qr_code
 
-
 ## How to use
 
 - Download the apk, click here:
